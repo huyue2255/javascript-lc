@@ -3,11 +3,14 @@ var searchRange = function(nums, target) {
         let start = 0;
         let end = n - 1;
         while (start + 1 < end) {
-          let mid = Math.floor((start + end) / 2);
-          if (nums[mid] >= target) {
+            let mid = Math.floor((start + end) / 2);
+          // console.log(mid);
+          if (nums[mid] == target) {
               end = mid;
+          } else if (nums[mid] < target){
+              start = mid;
           } else {
-              start = mid
+              end = mid;
           }
         }
         if (nums[start] == target) return start;
@@ -20,10 +23,12 @@ var searchRange = function(nums, target) {
         let end = n - 1;
         while (start + 1 < end) {
             let mid = Math.floor((start + end) / 2);
-            if (nums[mid] <= target) {
+            if (nums[mid] == target) {
                 start = mid;
+            } else if (nums[mid] < target){
+                start = mid
             } else {
-                end = mid
+                end = mid;
             }
         }
         if (nums[end] == target) return end;
@@ -37,4 +42,4 @@ var searchRange = function(nums, target) {
     return [left, right];
 };
 
-console.log(searchRange([8,8,8,8], 8));
+console.log(searchRange([5,7,7,8,8,10], 6));
