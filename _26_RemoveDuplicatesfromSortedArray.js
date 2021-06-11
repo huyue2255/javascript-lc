@@ -25,12 +25,12 @@ var removeDuplicates = function(nums) {
     nums = nums.sort((a,b) => a-b);
     let count = 1;
     for (let i = 1; i < nums.length; i++) {
-        if (nums[i] != nums[i-1]) {
+        if (nums[i] != nums[count-1]) {
             nums[count++] = nums[i];
         }
     }
     return count;
 };
 
-console.log(removeDuplicates([1,2,3,3,3,3,4]));
+console.log(removeDuplicates([1,2,2,2,2,1,1,1,1,4]));
 

@@ -25,7 +25,7 @@ var search = function(nums, target) {
     while (start + 1 < end) {
         let mid = start + parseInt((end - start) / 2);
         if (nums[mid] == target) return mid;
-        if (nums[start] < nums[mid]) {
+        if (nums[start] <= nums[mid]) {
             if (nums[start] <= target && target <= nums[mid]) {
                 end = mid;
             } else {
@@ -44,4 +44,4 @@ var search = function(nums, target) {
 };
 
 
-console.log(search([ 4, 5, 6, 7, 0, 1, 2], 1));
+console.log(search([3,1], 1));
