@@ -56,8 +56,8 @@ n2.right = null;
 n3.left = null;
 n3.right = null;
 
-// console.log(printPreorderTraversal(n1));
-console.log(preorderTraversal([]));
+console.log(printPreorderTraversal(n1)); // 1, 2, 3
+// console.log(preorderTraversal([]));
 
 
 
