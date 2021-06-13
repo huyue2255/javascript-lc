@@ -1,5 +1,5 @@
 /**
- * * 69. Sqrt(x)
+ *
  * time : O(logn) space : O(1)
  * @param {number} num
  * @return {boolean}

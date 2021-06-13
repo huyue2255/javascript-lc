@@ -70,8 +70,9 @@ var nextPermutation = function(nums) {
     }
     reverseArr(nums,firstSmall+1, nums.length - 1);
 };
-// nums = [1,2,7,4,3,1];
-nums = [3,2,1];
+nums = [1,2,7,4,3,1];
+// nums = [3,2,1];
 nextPermutation(nums)
-console.log(nums);
+console.log(nums); // [ 1, 3, 1, 2, 4, 7 ]
+
 

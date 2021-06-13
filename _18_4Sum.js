@@ -28,4 +28,4 @@ var fourSum = function(nums, target) {
     return  res;
 };
 
-console.log(fourSum([-2,-1,-1,1,1,2,2], 0));
+console.log(fourSum([-2,-1,-1,1,1,2,2], 0)); // [ [ -2, -1, 1, 2 ], [ -1, -1, 1, 1 ] ]

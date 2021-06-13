@@ -1,4 +1,14 @@
 /**
+ * /**
+ *
+ Here are few examples.
+ [1,3,5,6] 5   2
+ output : 2   1
+
+
+ time : O(logn);
+ space : O(1);
+
  * @param {number[]} nums
  * @param {number} target
  * @return {number}
@@ -8,38 +18,17 @@ var searchInsert = function(nums, target) {
     let start = 0;
     let end = nums.length - 1;
 
-    while(start + 1 < end) {
+    while(start <= end) {
         let mid = Math.floor((start + end) / 2);
-        if (nums[mid] >= target) {
-            end = mid;
+        if (nums[mid] == target) {
+            return mid;
+        } else if (nums[mid] > target) {
+            end = mid - 1;
         } else {
-            start = mid;
+            start = mid + 1;
         }
     }
-    if (nums[start] == target) return start;
-    if (nums[end] == target) return end;
-
-    // console.log(start);
-    // console.log(end);
-
-
-    if (end == nums.length - 1) {
-        if (nums[end] < target) {
-            pos = end + 1;
-        } else if (nums[end] > target && target > nums[start]){
-            pos = end;
-        } else {
-            pos = start;
-        }
-    } else {
-        if (nums[start] > target) {
-            pos = start;
-        } else {
-            pos = end;
-        }
-    }
-
-    return pos;
+    return left;
 };
 
 console.log(searchInsert([1,3], 0))

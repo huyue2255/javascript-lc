@@ -30,3 +30,6 @@ var plusOne = function(digits) {
     res[0] = 1
     return res;
 };
+
+let nums = [1,0,1,1];
+console.log(plusOne(nums)); // [ 1, 0, 1, 2 ]

@@ -8,4 +8,4 @@ var removeElement = function(nums, val) {
     return res;
 };
 
-console.log(removeElement([1,2,3,4,5], 5));
+console.log(removeElement([1,2,3,4,5], 5)); // 4
