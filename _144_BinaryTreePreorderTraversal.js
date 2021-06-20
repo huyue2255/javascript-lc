@@ -28,7 +28,6 @@ function helper(res, root) {
 }
 
 var preorderTraversal = function (root) {
-    console.log('root.length',root.length)
     if (root == null || root.length == 0) return [];
     let res = [];
     helper(res,root);

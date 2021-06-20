@@ -12,7 +12,7 @@
 
 **代码**：时间复杂度O(n)
 
-```java
+```javascript
 var twoSum = function(nums, target) {
     let arr = [];
     let map = new Map();
@@ -91,50 +91,6 @@ var threeSum = function(nums) {
 
 console.log(threeSum([-2,-1,-1,1,1,2,2])); // [ [ -2, 1, 1 ], [ -1, -1, 2 ] ]
 
-```
-
-
-## S.16_3Sum Closest
-
-原题地址：
-
-https://leetcode.com/problems/3sum-closest/
-
-思路：
-
-	1.	先排序。
-	2.	外层使用for循环，遍历每一个元素。内层左右夹逼，每当发现a+b+c更接近target的时候，就更改result的值。
-	3.	如果sum > target，如果sum < target ，begin++。
-
-代码：
-
-```java
-public static int threeSumClosest(int[] nums, int target) {
-		Arrays.sort(nums);   //先排序
-		int sum = 0;
-		int result = 0;
-		int diff = 0;
-		int min_diff = 10000;
-		for(int i = 0; i < nums.length-1; i++){  //外层循环
-			int begin = i+1;
-			int end = nums.length-1;
-			while(begin < end){
-				sum = nums[i] + nums[begin] + nums[end];
-				diff = Math.abs(sum - target);
-				if(diff < min_diff){
-					min_diff = diff;
-					result = sum;
-				}
-				
-				if(sum < target)   //之前排序的原因在这里，sum<target，begin 就往后移动
-					begin++;
-				else				//否则 如果 sum > target，end 就往前移动
-					end--;
-			}
-		}
-			
-		return result;
-    }
 ```
 
 ##S.18_4Sum
@@ -397,109 +353,73 @@ var mySqrt = function(x) {
 
 原题地址：https://leetcode.com/problems/next-permutation/
 
-**补充知识**：
-
-​	参考：http://www.cnblogs.com/houkai/p/3675270.html
-
-​	http://www.cnblogs.com/houkai/p/3675270.html
-
-​	什么是产生下一个排列数？
-
-​	全排序：
-
-​	从n个不同元素中任取m（m≤n）个元素，按照一定的顺序排列起来，叫做从n个不同元素中取出m个元素的一个排列。当m=n时所有的排列情况叫全排列。例如n=3，全排序为：123、132、213、231、312、321共6种。
-
-​	字典序法：
-
-​	对给定的字符集中的字符规定了一个先后关系，在此基础上规定两个全排列的先后是：从左到右逐个比较对应的字符大小。字符集{1,2,3}，较小的数字较先，这样按字典序生成的全排列即：123、132、213、231、312、321。
-
-​	所谓的产生下一个排列数是，输入一个全排列中的一串数字，按照字典序法给出排在该串数字之后的下一串数字，就是产生下一个排列数。输入：123，输出132。输入12435，输出12453。
-
-思路：
-
-​	1.从数列的右边向左寻找连续递增序列, 例如对于：1,3,**5,4,2**，其中5-4-2即为递增序列。找到5的下标，标记为index。
-
-​	2.从上述序列中找一个比它前面的数（3）大的最小数（4），把（4）的下标标记为exchangeIndex，并将且交换这两个数。于是1,3,5,4,2->1,4,**5,3,2**，此时交换后的依然是递增序列。
-
-​	3.新的递增序列逆序，即：1,4,5,3,2 => 1,4,2,3,5。把5，3，2改为升序2，3，5。
-
-
 
 代码：
 
 ```javascript
-// 从前往后找第一个破坏单调递增性质得位置。(x,y)
-// 将array[x]与array[y,n)中比 array[x]大的最小的数字交换，注意是考后的。
-// 将array[y,n)反过来。
-// 别忘了处理整个array本身就是单调递减得情况。
-
-
-// find the piovt point (x,y), if not found, reverse [0,n) and return
-// find the smallest element  > x from [y, n)
-// swap (x, z)
-// reverse [y, n)
-
 /**
- * * Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
- 1,2,3 → 1,3,2
- 3,2,1 → 1,2,3
- 1,1,5 → 1,5,1
+ 再来看下面一个例子，有如下的一个数组: 1　　2　　7　　4　　3　　1
+ 下一个排列为：1　　3　　1　　2　　4　　7
+ 那么是如何得到的呢，我们通过观察原数组可以发现，如果从末尾往前看，数字逐渐变大，到了2时才减小的，然后再从后往前找第一个比2大的数字，是3，那么我们交换2和3，再把此时3后面的所有数字转置一下即可，步骤如下：
 
- // 1　　2　　7　　4　　3　　1
- ^
- // 1　　2　　7　　4　　3　　1
- ^
- // 1　　3　　7　　4　　2　　1
- ^            ^
- // 1　　3　　1　　2　　4　　7
- ^   ^    ^   ^
+ x   y
+ 1　　2　　7　　4　　3　　1
 
- 7 4 3 2 1 1
+ 1　　2　　7　　4　　3　　1
+
+ 1　　3　　7　　4　　2　　1
+
+ 1　　3　　1　　2　　4　　7
+
+ find the pivot point (x=>2,y=>7), if not found, reverse [0,n) and return
+ find the smallest element z=>3  > x from [y=>7, n=>1)
+ swap (x, z)
+ reverse [y, n)
 
  time : O(n);
  space : O(1);
  * @param {number[]} nums
  */
 var nextPermutation = function(nums) {
-    let firstSmall = -1;
-    for (let i = nums.length - 2; i >= 0; i--) {
-        if (nums[i] < nums[i+1]) {
-            firstSmall = i;
-            break;
+        let firstSmall = -1;
+        for (let i = nums.length - 2; i >= 0; i--) {
+            if (nums[i] < nums[i+1]) {
+                firstSmall = i;
+                break;
+            }
         }
-    }
 
-    if (firstSmall == -1) {
-        nums.reverse();
-        return;
-    }
-
-    let firstLarge = -1;
-    for (let i = nums.length - 1; i > firstSmall; i--) {
-        if (nums[i] > nums[firstSmall]) {
-            firstLarge = i;
-            break;
+        if (firstSmall == -1) {
+            nums.reverse();
+            return;
         }
-    }
 
-    const swap = function (arr, i, j) {
-        let temp = 0;
-        temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
-    }
-
-    swap(nums, firstSmall, firstLarge);
-
-    const reverseArr = function (arr, i, j) {
-        while (i < j) {
-            swap(arr, i, j);
-            i++;
-            j--;
+        let firstLarge = -1;
+        for (let i = nums.length - 1; i > firstSmall; i--) {
+            if (nums[i] > nums[firstSmall]) {
+                firstLarge = i;
+                break;
+            }
         }
-    }
-    reverseArr(nums,firstSmall+1, nums.length - 1);
-};
+
+        const swap = function (arr, i, j) {
+            let temp = 0;
+            temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+
+        swap(nums, firstSmall, firstLarge);
+
+        const reverseArr = function (arr, i, j) {
+            while (i < j) {
+                swap(arr, i, j);
+                i++;
+                j--;
+            }
+        }
+        reverseArr(nums,firstSmall+1, nums.length - 1);
+    };
 nums = [1,2,7,4,3,1];
 // nums = [3,2,1];
 nextPermutation(nums)
@@ -515,72 +435,38 @@ console.log(nums); // [ 1, 3, 1, 2, 4, 7 ]
 
 代码：
 
-```java
-private  Set<Character> set = new HashSet<Character>();
-public boolean check(char c){
-		if(c == '.'){
-			return true;
-		}else if(c >= '1' && c <= '9'){
-			if(set.contains(c)){
-				return false;
-			}else{
-				set.add(c);
-				return true;
-			}
-		}else{
-			return false;
-		}
-	}
-	public boolean isValidSudoku(char[][] board) {
-		
-		//比较每一个行
-		for(int i =0; i<9; i++){
-			for(int j=0; j<9; j++){
-				if(!check(board[i][j])) 
-					return false;
-			}
-			set.clear();     //这一步很关键，每次比较新的一个行时，都要清空set.
-		}
-		
-		//比较每一个列
-		for(int i=0; i<9; i++){
-			for(int j=0; j<9; j++){
-				if(!check(board[j][i]))
-					return false;
-			}
-			set.clear();
-		}
-		
-		//比较每一9宫格内部，元素是 不重复的
-		for(int i=0; i<9; i++){
-			for(int j=0; j<9; j++){
-				if(!check(board[i/3*3+j/3][i%3*3+j%3]))   //难点
-					return false;
-			}
-			set.clear();
-		}
-		
-		return true;
-	}
-```
+```javascript
+var isValidSudoku1 = function(board) {
+    let seen = new Set();
+    for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+            let number = board[i][j];
+            // 使用i / 3 + "-" + j / 3 得到对应第几行第几列的方块
+            // 不用弄成一个数字, 例如第3个方块. 采用行列的形式更直观
+            if (number != '.'){
+                if (seen.has(number + " in row " + i)) {
+                    return false;
+                }else {
+                    seen.add(number + " in row " + i);
+                }
 
-难点1：
+                if (seen.has(number + " in column " + j)) {
+                    return false;
+                }else {
+                    seen.add(number + " in column " + j);
+                }
 
-​	数独中一共有9个3*3的格子，判断这个9个格子元素是否重复的时候，条件是这样的：
-
-```java
-for(int i=0; i<9; i++){
-			for(int j=0; j<9; j++){
-				if(!check(board[i/3*3+j/3][i%3*3+j%3]))   //难点
-					return false;
-			}
+                if (seen.has(number + " in block " + Math.floor(i / 3) + "-" + Math.floor(j / 3))) {
+                    return false;
+                }else {
+                    seen.add(number + " in block " + Math.floor(i / 3) + "-" + Math.floor(j / 3));
+                }
+            }
+        }
+    }
+    return true;
 }
 ```
-
-难点2：
-
-​	如何判断一行中有没有重复元素，使用HashSet。每次遍历的元素先判断HashSet中没有，如果有就是包含重复元素。如果没有，则表示没有，并把该元素放到HashSet中。
-
 
 ## S.48_Rotate Image
 
@@ -728,125 +614,391 @@ var jump = function(nums) {
 console.log(removeDuplicates([2,3,1,1,4]));
 ```
 
+##S.118_Pascal's Triangle
+```javascript
+/**
+ * 118. Pascal's Triangle
+ * For example, given numRows = 5,
+ Return
 
+ [
+     [1],
+    [1,1],
+   [1,2,1],
+  [1,3,3,1],
+ [1,4,6,4,1]
+ ]
+
+ time : O(n^2)
+ space : O(n)
+
+ * @param {number} numRows
+ * @return {number[][]}
+ */
+var generate = function(numRows) {
+    let res = [];
+    let list = [];
+    for (let i = 0; i < numRows; i++) {
+        // insert
+        list.splice(0,0,1);
+        let size = list.length; // 这个很重要，list是在动态变化的，要先把他原来的长度先存来。
+        for (let j = 1; j < size - 1; j++) {
+            // replace
+            list.splice(j,1,list[j] + list[j+1]);
+        }
+        // shallow copy
+        res.push(list.slice());
+    }
+    return res;
+};
+```
+
+##S.119_Pascal's Triangle II
+```javascript
+/**
+ * 119. Pascal's Triangle II
+ * [
+     [1],
+    [1,1],
+   [1,2,1],
+  [1,3,3,1],
+ [1,4,6,4,1]
+ ]
+ * For example, given k = 3,
+ Return [1,3,3,1].
+
+ time : O(n^2)
+ space : O(n)
+ * @param {number} rowIndex
+ * @return {number[]}
+ */
+var getRow = function(rowIndex) {
+    let numRows = rowIndex + 1
+    let res = [];
+    for (let i = 0; i < numRows; i++) {
+        // insert
+        res.splice(0,0,1);
+        let size = list.length;
+        for (let j = 1; j < size - 1; j++) {
+            // replace
+            res.splice(j,1,list[j] + list[j+1]);
+        }
+    }
+    return res[rowIndex];
+};
+```
+
+##S.120_Triangle
+```javascript
+/**
+ * 120. Triangle
+ * Given a triangle, find the minimum path sum from top to bottom. Each step you may move to adjacent numbers
+ * on the row below.
+
+ For example, given the following triangle
+ [
+    [2],
+   [3,4],
+   [6,5,7],
+ [4,1,8,3]
+ ]
+ The minimum path sum from top to bottom is 11 (i.e., 2 + 3 + 5 + 1 = 11).
+
+ i : j
+ i + 1 : j, j + 1
+
+ res = [4, 1, 8, 3, 0]
+ res = [7, 6, 10]
+ res = [9, 10]
+ res = [2]
+
+ time : O(n^2)
+ space : O(n)
+ * // Definition for a Node.
+ * function Node(val, left, right, next) {
+ *    this.val = val === undefined ? null : val;
+ *    this.left = left === undefined ? null : left;
+ *    this.right = right === undefined ? null : right;
+ *    this.next = next === undefined ? null : next;
+ * };
+ */
+
+/**
+ * @param {Node} root
+ * @return {Node}
+ */
+/**
+ * @param {number[][]} triangle
+ * @return {number}
+ */
+var minimumTotal = function(triangle) {
+    let res = new Array(triangle.length + 1).fill(0);
+    for (let i = triangle.length -1; i >= 0;i--) {
+        for (let j = 0; j < triangle[i].length; j++) {
+            res[j] = Math.min(res[j], res[j+1]) + triangle[i][j];
+        }
+    }
+    return res[0];
+};
+```
+
+## 121. Best Time to Buy and Sell Stock
+```javascript
+/**
+ * 121. Best Time to Buy and Sell Stock
+ * Say you have an array for which the ith element is the price of a given stock on day i.
+
+ If you were only permitted to complete at most one transaction (ie,
+ buy one and sell one share of the stock), design an algorithm to find the maximum profit.
+ Input: [7, 1, 5, 3, 6, 4]
+ Output: 5
+
+ max. difference = 6-1 = 5 (not 7-1 = 6, as selling price needs to be larger than buying price)
+
+ time : O(n);
+ space : O(1);
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function(prices) {
+    if (prices == null || prices.length < 2) return 0;
+    let min = prices[0];
+    let profit = 0
+    for (let i = 1; i < prices.length; i++) {
+        min = Math.min(min, prices[i]);
+        profit = Math.max(profit, prices[i] - min);
+    }
+    return profit;
+};
+
+```
+
+## S.122_Best Time to Buy and Sell Stock II
+```javascript
+/**
+ * 122. Best Time to Buy and Sell Stock II
+ * Say you have an array for which the ith element is the price of a given stock on day i.
+
+ Design an algorithm to find the maximum profit. You may complete as many transactions as you like (ie, buy one and sell one share of the stock multiple times). However,
+ you may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+
+ case : [5, 1, 2, 3, 4]
+           /     \
+ -----   /        \
+ 有这三种情况，只有第二种情况才可能有买卖
+
+ time : O(n);
+ space : O(1);
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function(prices) {
+    if (prices == null || prices.length < 2) return 0;
+    let profit = 0;
+    for (let i = 1; i < prices.length; i++) {
+        if (prices[i] > prices[i-1]) {
+            profit += prices[i] - prices[i-1];
+        }
+    }
+    return profit;
+};
+```
+
+## S.123_Best Time to Buy and Sell Stock III
+```javascript
+/**
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function (prices) {
+    let buy1 = -Infinity, buy2 = -Infinity;
+    let sell1 = 0, sell2 = 0;
+    for (price of prices) {
+        buy1 = Math.max(buy1, - price);
+        sell1 = Math.max(sell1, buy1 + price);
+        buy2 = Math.max(buy2, sell1 - price);
+        sell2 = Math.max(sell2, buy2 + price);
+    }
+    return sell2;
+};
+
+
+let prices = [7,6,4,3,1];
+console.log(maxProfit(prices));
+```
 
 ## S.73_Set Matrix Zeroes
 
 原题地址：https://leetcode.com/problems/set-matrix-zeroes/
 
-思路：
+思路：这是一道实现题，
+遍历数组， 第一行，第一列全部变为0。
+然后从第二行，第二列开始遍历。 设为0。
 
-​	方法1：空间复杂度O(m+n).
+很巧妙的地方不能从第0列第0行。 因为。会全部变0； let matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]] =》 [[0,0,0,0],[3,4,5,2],[1,3,1,5]] =》 [[0,0,0,0],[0,0,0,0],[0,0,0,0]]
 
-​	建立一个长度为m的数组，记录m行中哪一行有0。建立一个长度为n的数组，记录n列中哪一列存在0.然后访问这两个数组，并且对原来的matrix做更新。
 
 代码：
 
-​	空间复杂度：O(m+n). 时间复杂度O(m*n).
+```javascript
+/* 73. Set Matrix Zeroes
+    [
+    [1, 0, 1, 1],
+        [1, 1, 0, 0],
+        [0, 1, 1, 1],
+        [1, 1, 1, 1]
+    ]
 
-```java
-public void setZeroes(int[][] matrix) {
-       
-		int m = matrix.length; //返回二维数组行数
-		int n = matrix[0].length; //返回二维数组列数
-		int[] rows = new int[m];
-		int[] columns = new int[n];
-		
-		for(int i = 0; i < m; i++){
-			for(int j = 0; j < n; j++){
-				if(matrix[i][j] == 0){
-					rows[i] = -1;  //记录哪一行有0.并用-1进行标记。
-					columns[j] = -1;  //记录哪一列有0.并用-1进行标记。
-				}
-			}
-		}
-		
-		for(int i = 0; i < m; i++){
-			if(rows[i] == -1){
-				for(int j = 0; j < n; j++){
-					matrix[i][j] = 0;   //把对应行的元素全部置为0.
-				}
-			}
-		}
-		
-		for(int i = 0; i < n; i++){
-			if(columns[i] == -1){
-				for(int j = 0; j < m; j++){
-					matrix[j][i] = 0;  //把对应列的元素全部置为0.
-				}
-			}
-		}
+time : O(n * m)
+space : O(1)
+ */
+var setZeroes = function(matrix) {
+   if(matrix == null || matrix.length == 0) return;
+   if (matrix[0] == null || matrix[0].length == 0) return;
+   let m = matrix.length;
+   let n = matrix[0].length;
+   let row = false;
+   let col = false;
+   for (let i = 0; i < m; i++) {
+      for (let j = 0; j < n; j++) {
+         if (matrix[i][j] == 0) {
+            matrix[0][j] = 0;
+            matrix[i][0] = 0;
+            if (i == 0) row = true;
+            if (j == 0) col = true;
+         }
+      }
+   }
+
+   for (let i = 1; i < m; i++) {
+      if (matrix[i][0] == 0) {
+         for (let j = 0; j < n; j++) {
+            matrix[i][j] = 0;
+         }
+      }
+   }
+   for (let j = 1; j < n; j++) {
+      if (matrix[0][j] == 0) {
+         for (let i = 0; i < m; i++) {
+            matrix[i][j] = 0;
+         }
+      }
+   }
+
+   if (row) {
+      for (let j = 0; j < n; j++) {
+         matrix[0][j] = 0;
+      }
+   }
+   if (col) {
+      for (let i = 0; i < m; i++) {
+         matrix[i][0] = 0;
+      }
+   }
+};
+```
+
+## S.139_Word Break
+```javascript
+/**
+ * 139. Word Break
+ * Given a non-empty string s and a dictionary wordDict containing a list of non-empty words,
+ * determine if s can be segmented into a space-separated sequence of one or more dictionary words.
+ * You may assume the dictionary does not contain duplicate words.
+
+ For example, given
+ s = "leetcode",
+ dict = ["leet", "code"].
+
+ Return true because "leetcode" can be segmented as "leet code".
+
+ time : O(n^2) ～ O(n^4);
+ space : O(n);
+
+ contains 时间：O(n)
+ substring 时间：O(n)
+
+ s = "leetcode",
+ dict = ["leet", "code"]
+ 又是一道dp的题目。 解释视频： https://www.youtube.com/watch?v=H2EgWq-45CY
+
+ * @param {string} s
+ * @param {string[]} wordDict
+ * @return {boolean}
+ */
+var wordBreak = function(s, wordDict) {
+    let dp = new Array(s.length + 1).fill(false);
+    dp[0] = true;
+    for (let i = 1; i <= s.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (dp[j] && wordDict.includes(s.substring(j,i))){
+                dp[i] = true;
+                break;
+            }
+        }
     }
+    return dp[s.length];
+};
 ```
 
 ## S.134_Gas Station
 
 原题地址：https://leetcode.com/problems/gas-station/
 
-思路1：
+代码：
 
-​	gas和cost是两个数组，并且gas中不同位置代表了不同的station所拥有的不同油量。理解上，gas要作为一个循环数组，从任何一个位置出发都可以再回到这个位置。
+```javascript
+/**
+ * 134. Gas Station
+ * There are N gas stations along a circular route, where the amount of gas at station i is gas[i].
 
-​	初始状态：gas[i] - cost[i] > 0.就可以从i位置达到i+1的位置。
+ You have a car with an unlimited gas tank and it costs cost[i] of gas to travel from station i to its next station (i+1).
+ You begin the journey with an empty tank at one of the gas stations.
 
-​	随后状态：上次剩余油量  + gas[i+1]  - cost[i+1] > 0就可以到达i+2的位置。
+ Return the starting gas station's index if you can travel around the circuit once, otherwise return -1.
 
-代码：时间复杂度O(n^2).
+ 非常经典的一道题。可以转换成求最大连续和做，但是有更简单的方法。基于一个数学定理：
 
-```java
-public int canCompleteCircuit(int[] gas, int[] cost) {
-		int length = gas.length;
-		int remain = 0;
-		for(int startIndex = 0; startIndex < length; startIndex++){   //把每个点作为开始点进行判断
-			int positions = 1;
-			int index = startIndex;
-			while(remain+gas[index]-cost[index] >= 0){   //
-				if(positions == length)
-					return startIndex;
-				positions++;
-				remain = remain + gas[index] - cost[index];
-				index = (index+1) % length;
-			}
-		}
-		return -1;
-	}
-```
+ 如果一个数组的总和非负，那么一定可以找到一个起始位置，从他开始绕数组一圈，累加和一直都是非负的
+ （证明貌似不难，以后有时间再补）
 
-思路2：
 
-​	本题如果有解，那么题目中gas[0]+...+gas[n]的和一定大于cost[0]+...+cost[n]的和。并且起始位置是第一次出现gas[0]+...+gas[i]>cost[0]+...+cost[i]的位置。前i-1个位置，gas的和是小于cost的和，知道出现第i个位置，gas的和大于cost的和。
+ 有了这个定理，判断到底是否存在这样的解非常容易，只需要把全部的油耗情况计算出来看看是否大于等于0即可。
 
-​	本题如果无解，那么题目中gas[0]+...+gas[n]的和一定小于cost[0]+...+cost[n]的和。
+ 那么如何求开始位置在哪？
 
-​	于是：
+ 注意到这样一个现象：
 
-​	如果total<0则一定没有解，因为不管从哪个位置开始，一定无法通过最后一个加油站。
+ 1. 假如从位置i开始，i+1，i+2...，一路开过来一路油箱都没有空。说明什么？说明从i到i+1，i+2，...肯定是正积累。
+ 2. 现在突然发现开往位置j时油箱空了。这说明什么？说明从位置i开始没法走完全程(废话)。那么，我们要从位置i+1开始重新尝试吗？不需要！为什么？
+ 因为前面已经知道，位置i肯定是正积累，那么，如果从位置i+1开始走更加没法走完全程了，因为没有位置i的正积累了。
+ 同理，也不用从i+2，i+3，...开始尝试。所以我们可以放心地从位置j+1开始尝试。
 
-​	如果total>=0一定有解，而且这个解一定是最后一个sum<0的下一个位置（j=i+1）。
+ https://www.cnblogs.com/boring09/p/4248482.html
+ https://www.youtube.com/watch?v=PY0GUlRFTxg
 
-代码：时间复杂度O(n)
+ time : O(n)
+ space : O(1)
+ * @param {number[]} gas
+ * @param {number[]} cost
+ * @return {number}
+ */
+var canCompleteCircuit = function(gas, cost) {
+    if (gas == null || cost == null || gas.length == 0 || cost.length == 0) return -1;
+    let total = 0; // 总油量-总消耗
+    let curr = 0; // 当下剩下的油量
+    let start = 0; // 表示起点
+    for (let i = 0; i < cost.length; i++) {
+        curr += gas[i] - cost[i];
+        if (curr < 0) {
+            start = i + 1;
+            curr = 0;
+        }
+        total += gas[i] - cost[i];
+    }
 
-```java
-public int canCompleteCircuit(int[] gas, int[] cost) {
-		int length = gas.length;
-		int total = 0;
-		int sum = 0;
-		int j = 0;
-		for(int i = 0; i < length; i++){
-			sum += (gas[i] - cost[i]);
-			total += (gas[i] - cost[i]);
-			//只要第一次出现gas[i]-cost[i]>0，那么i就可以作为start。
-			//并且此后一直用sum做判断，是否一直满足sum>0。一旦出现一次sum<0,重新修改start的值。
-			if(sum < 0){  
-				j = i + 1;
-				sum = 0;
-			}
-		}
-		if(total >= 0)
-			return j;
-		else
-			return -1;
-	}
+    return total >= 0? start : -1;
+};
 ```
 
 ## S.135_Candy
@@ -855,47 +1007,61 @@ public int canCompleteCircuit(int[] gas, int[] cost) {
 
 思路：
 
-​	这道题和Trapping water那个是一样的想法，因为无论是水坑还是得到糖的小朋友，影响因素都不只一边，都是左右两边的最小值/最大值来决定的。做法是分别从左右两边遍历数组。
+这道题和Trapping water那个是一样的想法，因为无论是水坑还是得到糖的小朋友，影响因素都不只一边，都是左右两边的最小值/最大值来决定的。做法是分别从左右两边遍历数组。
 
-​	1.leftResult数组存从左边遍历，当前小朋友对比其左边小朋友，他能拿到糖的数量；
+1.leftResult数组存从左边遍历，当前小朋友对比其左边小朋友，他能拿到糖的数量；
 
-​	2.rightResult数组存从右边遍历，当前小朋友对比其右边小朋友，他能拿到的糖的数量。
+2.rightResult数组存从右边遍历，当前小朋友对比其右边小朋友，他能拿到的糖的数量。
 
-​	3.最后针对这两个数组，每个小朋友能拿到的糖的数量就是这两个数最大的那个数，求总加和就好了。
+3.最后针对这两个数组，每个小朋友能拿到的糖的数量就是这两个数最大的那个数，求总加和就好了。
 
 代码：
 
-```java
-public int candy(int[] ratings){
-		
-		int length = ratings.length;
-		int[] leftResult = new int[length];
-		int[] rightResult = new int[length];
-		//每个元素只和左边元素相比较
-		leftResult[0] = 1;
-		for(int i = 1; i < length; i++){
-			if(ratings[i] > ratings[i-1])
-				leftResult[i] = leftResult[i-1]+1;
-			else
-				leftResult[i] = 1;
-		}
-		//每个元素只和右边元素比较
-		rightResult[length-1] = 1;
-		for(int i = length-2; i >= 0; i--){
-			if(ratings[i] > ratings[i+1])
-				rightResult[i] = rightResult[i+1]+1;
-			else
-				rightResult[i] = 1;
-		}
-		int sum = 0;
-		for(int i = 0; i<length; i++){
-			if(leftResult[i] > rightResult[i])
-				sum += leftResult[i];
-			else
-				sum += rightResult[i];
-		}
-		return sum;
-	}
+```javascript
+/**
+ * 135. Candy
+ * There are N children standing in a line. Each child is assigned a rating value.
+
+ You are giving candies to these children subjected to the following requirements:
+
+ Each child must have at least one candy.
+ Children with a higher rating get more candies than their neighbors.
+ What is the minimum candies you must give?
+
+ ratings:     [4, 5, 1, 1, 3, 7]
+ candies:     [1, 1, 1, 1, 1, 1]
+
+ ratings:     [4, 5, 1, 1, 3, 7]
+ candies:     [1, 2, 1, 1, 2, 3]
+
+ ratings:     [4, 5, 1, 1, 3, 7]
+ candies:     [1, 2, 1, 1, 2, 3]
+
+ time : O(n)
+ space : O(n)
+ * @param {number[]} ratings
+ * @return {number}
+ */
+var candy = function(ratings) {
+    let candies = new Array(ratings.length).fill(1);
+    for (let i = 1; i < candies.length; i++) {
+        if (ratings[i] > ratings[i-1]) {
+            candies[i] = candies[i-1] + 1;
+        }
+    }
+
+    for (let i = candies.length - 2; i >= 0; i--) {
+        if (ratings[i] > ratings[i+1] && candies[i] <= candies[i+1]) {
+            candies[i] = candies[i+1] + 1;
+        }
+    }
+
+    let res = 0;
+    for (let ele of candies) {
+        res += ele;
+    }
+    return res;
+};
 ```
 
 ## S.136_Single Number
@@ -904,53 +1070,39 @@ public int candy(int[] ratings){
 
 思路：
 
-​	这道题目要求使用线性的时间复杂度，和很少的附加空间。运用亦或^，相同为0，不同为1的性质。0^x = x.设定一个初始值num=0，然后和数组中所有元素亦或，最后得到的那个值就是出现次数为奇数次的值。 因此出现次数为1次的数字就产生了。
+这道题目要求使用线性的时间复杂度，和很少的附加空间。运用亦或^，相同为0，不同为1的性质。
+
+0^x = x.设定一个初始值num=0，然后和数组中所有元素亦或，最后得到的那个值就是出现次数为奇数次的值。 因此出现次数为1次的数字就产生了。
 
 代码：
 
-```java
-public int singleNumber(int[] nums) {
-		int num = 0;
-		int length = nums.length;
-		for(int i = 0; i < length; i++){
-			num = num^nums[i];
-		}
-		return num;
-	}
+```javascript
+var singleNumber = function(nums) {
+    let res = nums[0];
+    for (let i = 1; i < nums.length; i++) {
+        res ^= nums[i];
+    }
+    return res;
+};
 ```
 
 ##S.137_ Single Number II
 原题地址：https://leetcode.com/problems/single-number-ii/
 思路1：
 
-​	扫描数组，把数据读入hashMap中，然后遍历hashMap，找到按个次数不是3的元素。空间上增加了hashMap的空间，时间上多遍历一次hashMap。
+扫描数组，把数据读入hashMap中，然后遍历hashMap，找到按个次数不是3的元素。空间上增加了hashMap的空间，时间上多遍历一次hashMap。
 
 代码：
 
-```java
-public int singleNumber(int[] nums) {
-		int length = nums.length;
-		HashMap<Integer,Integer> map = new HashMap<>();
-		for(int i = 0; i < length; i++){
-			if(map.containsKey(nums[i])){
-				map.put(nums[i], map.get(nums[i])+1);
-			}
-			else
-				map.put(nums[i], 1);
-		}
-		int result = 0;
-		Iterator<java.util.Map.Entry<Integer,Integer>> it = map.entrySet().iterator();
-		while(it.hasNext()){
-			Map.Entry<Integer, Integer> entry = it.next();
-			Integer key = entry.getKey();
-			Integer value = entry.getValue();
-			if(value != 3){
-				result = key;
-				break;
-			}
-		}
-		return result;
-	}
+```javascript
+const singleNumber = (nums) => {
+    let set = new Set(nums);
+    let res = [...set].reduce((acc, cur) => acc + cur);
+    let total = res * 3;
+    let result = nums.reduce((acc, cur) => acc + cur);
+    let num = (total - result) / 2;
+    return num;
+};
 ```
 
 

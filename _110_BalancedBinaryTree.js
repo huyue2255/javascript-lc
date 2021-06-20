@@ -13,7 +13,7 @@
  * @return {boolean}
  */
 
-// recursion call recursion function inside
+// recursion call recursion function inside (这种并不是一个好的方法)
 function getDepth(root) {
     if (root == null) return 0;
     return 1 + Math.max(getDepth(root.left),getDepth(root.right));
