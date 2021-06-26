@@ -1,5 +1,7 @@
 # Leetcode刷题笔记（数组部分）
 
+
+
 ## S.1_Two Sum
 
 **思路1**：
@@ -30,6 +32,39 @@ var twoSum = function(nums, target) {
 console.log(twoSum([1, 2, 3, 7, 8], [9])); // [ 1, 3 ]
 ```
 
+## S.167. Two Sum II - Input array is sorted
+```javascript
+/**
+ * 167. Two Sum II - Input array is sorted
+ Input: numbers={2, 7, 11, 15}, target=9
+ Output: index1=1, index2=2
+
+ time : O(n)
+ space : O(1)
+ * @param {number[]} numbers
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+    if (nums == null || nums.length < 2) {
+        return new Array(-1,-1);
+    }
+
+    let left = 0;
+    let right = nums.length - 1;
+    while (left < right) {
+        let sum = nums[left] + nums[right]
+        if (sum == target) {
+            return new Array(left+1, right+1);
+        } else if (sum > target) {
+            right--;
+        } else {
+            left++;
+        }
+    }
+    return new Array(-1, -1);
+};
+```
 
 ## S.15_3Sum
 
@@ -174,6 +209,68 @@ var removeElement = function(nums, val) {
     };
 
 console.log(removeElement([1,2,3,4,5], 5)); // 4
+```
+
+## S.189. Rotate Array
+```javascript
+/**
+ * 189. Rotate Array
+ * Rotate an array of n elements to the right by k steps.
+
+ For example, with n = 7 and k = 3, the array [1,2,3,4,5,6,7] is rotated to [5,6,7,1,2,3,4].
+
+ Note:
+ Try to come up as many solutions as you can, there are at least 3 different ways to solve this problem.
+
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {void} Do not return anything, modify nums in-place instead.
+ */
+
+// ======================================================Method 1===============================================================
+//time : O(n)  space : O(n)
+var rotate = function(nums, k) {
+    let temp = new Array(nums.length);
+    for (let i = 0; i < nums.length; i++) {
+        // 注意这里也是一个技巧 （0 + 3 => k） % 7
+        // [1,2,3,4,5,6,7]
+        // [      1,2,3,4
+        temp[(i+k) % nums.length] = nums[i];
+    }
+    // nums = [...temp];
+    for (let i = 0; i < nums.length; i++) {
+        nums[i] = temp[i];
+    }
+    console.log(nums);
+};
+
+let arr = [1,2,3,4,5,6,7];
+rotate(arr,3);
+
+// ======================================================Method 2===============================================================
+//time : O(n)  space : O(1)
+/**
+ Original List                   : 1 2 3 4 5 6 7
+ After reversing all numbers     : 7 6 5 4 3 2 1
+ After reversing first k numbers : 5 6 7 4 3 2 1
+ After revering last n-k numbers : 5 6 7 1 2 3 4 --> Result
+ */
+function helper(s, start, end) {
+    while (start < end) {
+        let temp = s[start];
+        s[start] = s[end];
+        s[end] = temp;
+        start++;
+        end--;
+    }
+    return s;
+}
+var rotate = function(nums, k) {
+    k = k % nums.length;
+    helper(nums, 0, nums.length-1);
+    helper(nums,0,k-1);
+    helper(nums,k, nms.length-1);
+};
 ```
 
 ## S.11_Container With Most Water

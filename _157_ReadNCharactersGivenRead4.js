@@ -1,0 +1,33 @@
+/**
+ * Definition for read4()
+ *
+ * @param {character[]} buf4 Destination buffer
+ * @return {number} The number of actual characters read
+ * read4 = function(buf4) {
+ *     ...
+ * };
+ */
+
+/**
+ * @param {function} read4()
+ * @return {function}
+ */
+var solution = function(read4) {
+    /**
+     * @param {character[]} buf Destination buffer
+     * @param {number} n Number of characters to read
+     * @return {number} The number of actual characters read
+     */
+    return function(buf, n) {
+        let temp = new Array(4);
+        let index = 0;
+        while (true) {
+            let count = read4(temp);
+            count = Math.min(count, n - index);
+            for (let i = 0; i < count; i++) {
+                buf[index++] = temp[i];
+            }
+            if (index == n || count < 4) return index;
+        }
+    };
+};

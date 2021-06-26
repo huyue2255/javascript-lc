@@ -474,3 +474,197 @@ var cloneGraph = function(node, map = new Map()) {
     return n;
 };
 ```
+
+##S.199. Binary Tree Right Side View
+```javascript
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ *
+ * given a binary tree, imagine yourself standing on the right side of it,
+ * return the values of the nodes you can see ordered from top to bottom.
+
+ For example:
+ Given the following binary tree,
+    1            <---
+  /   \
+ 2     3         <---
+  \     \
+  5     4       <---
+ You should return [1, 3, 4].
+
+ root 1 res : 0 level : 1
+
+ res : 1, 3, 4
+
+ time : O(n);
+ space : O(n);
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+
+function TreeNode(val, left, right) {
+    this.val = (val === undefined ? 0 : val)
+    this.left = (left === undefined ? null : left)
+    this.right = (right === undefined ? null : right)
+}
+
+// Method 1 - DFS
+function helper(res, root, level) {
+    if (root == null) return;
+    if (res.length == level) {
+        res.push(root.val);
+    }
+    helper(res, root.right, level + 1);
+    helper(res, root.left, level + 1);
+}
+
+var rightSideView = function (root) {
+    let res = [];
+    helper(res, root, 0);
+    return res;
+};
+
+
+// Method 2 - BFS
+var rightSideView = function (root) {
+    if (!root) return [];
+    let res = [];
+    let queue = [root];
+    while (queue.length) {
+        let size = queue.length;
+        for (let i = 0; i < size; i++) {
+            let cur = queue.shift();
+            if (i == 0) res.push(cur.val);
+            if (cur.right != null) queue.push(cur.right);
+            if (cur.left != null) queue.push(cur.left);
+
+        }
+    }
+    return res;
+};
+
+let root = new TreeNode(3);
+let node1 = new TreeNode(9);
+let node2 = new TreeNode(20);
+root.left = node1;
+root.right = node2;
+
+console.log(rightSideView(root));
+```
+
+##S.958. Check Completeness of a Binary Tree
+```javascript
+/**
+ * Given the root of a binary tree, determine if it is a complete binary tree.
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+function TreeNode(val, left, right) {
+    this.val = (val === undefined ? 0 : val)
+    this.left = (left === undefined ? null : left)
+    this.right = (right === undefined ? null : right)
+}
+// Method 1
+var isCompleteTree = function (root) {
+    if (root == null) return false;
+    let queue = [root];
+    // 加上这一行就不对了,要非常注意。
+    // let size = queue.length;
+    let flag = false;
+    while (queue.length) {
+        let cur = queue.shift();
+        // case 1: 左边为空，右边不为空。肯定不对
+        if (cur.left == null && cur.right != null) return false;
+        // case 2: 左边不是空，右边是空。先判断flag, 然后判断要是还有新的node就不对。在push.
+        if (cur.left != null && cur.right == null) {
+            if (flag == true) {
+                return false;
+            }
+            queue.push(cur.left);
+            flag = true;
+        }
+        // case 3: 同时都为空，就把flag给改了。
+        if (cur.left == null && cur.right == null) {
+            flag = true;
+        }
+        // case 4: 同时都不是空，先判断flag,在push.
+        if (cur.left != null && cur.right != null) {
+            if (flag == true) {
+                return false;
+            }
+            queue.push(cur.left);
+            queue.push(cur.right);
+        }
+    }
+    return true;
+};
+
+// Method 2:  T.C: O(N)， S.C: O(N)
+// 这种情况比较特殊。就是一直push.直到出现null。stop。如果还有node && node != null。就不对。
+var isCompleteTree2 = function(root) {
+    let queue = [];
+    queue.push(root);
+    while (queue.length) {
+        let cur = queue.shift();
+        if (cur == null) {
+            break;
+        }
+        queue.push(cur.left);
+        queue.push(cur.right);
+    }
+
+    while (queue.length) {
+        let cur = queue.shift();
+        if (cur != null) {
+            return false;
+        }
+    }
+    return true;
+};
+```
+## S.785_Is Graph Bipartite?
+```javascript
+/**
+ * @param {number[][]} graph
+ * @return {boolean}
+ */
+var isBipartite = function (graph) {
+    const n = graph.length;
+    const visited = Array(n).fill(0);
+
+    for (let i = 0; i < n; i++) {
+        if (visited[i] == 0) {
+            let queue = [i];
+            visited[i] = 1;
+            while (queue.length) {
+                const curr = queue.shift();
+                for (let nei of graph[curr]) {
+                    if (visited[nei] === visited[curr]) {
+                        return false;
+                    }
+                    if (visited[nei] == 0) {
+                        visited[nei] = -visited[curr];
+                        queue.push(nei);
+                    }
+                }
+            }
+        }
+    }
+    return true;
+};
+```

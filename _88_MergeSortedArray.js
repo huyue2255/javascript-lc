@@ -1,6 +1,6 @@
 /**
  * Input: nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
- Output: [1,2,2,3,5,6]
+ * Output: [1,2,2,3,5,6]
  * @param {number[]} nums1
  * @param {number} m
  * @param {number[]} nums2
@@ -37,4 +37,4 @@ var merge1 = function(nums1, m, nums2, n) {
 let nums1 = [2,2,3,0,0,0];
 let nums2 = [2,2,2];
 let res = merge1(nums1, 3, nums2, 2)
-console.log(res.sort());
+console.log(res);
