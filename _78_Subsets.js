@@ -37,25 +37,36 @@
 
  time : O(2^n);
  space : O(n);
+ // cloning an array
+ // (ES6) - [...tempList]
+ // (ES5) - JSON.parse(JSON.stringify(tempList)) ;
  * @param {number[]} nums
  * @return {number[][]}
  */
 
-function helper(res, list, nums, index) {
-    res.push(list.slice());
-    for(let i = index; i < nums.length; i++) {
-        list.push(nums[i]);
-        helper(res, list, nums, i+1);
-        list.pop();
+// Method 1: 这种方法很巧妙！
+function subsetsI(nums) {
+    const result = [[]];
+    for (const num of nums) {
+        result.push(...result.map(x => [...x, num]));
+    }
+    return result;
+};
+
+// Method 2： 常规做方法
+function subsets(nums) {
+    let list = [];
+    helper(list, [], nums, 0);
+    return list;
+}
+
+function helper(list , tempList, nums, start){
+    list.push([...tempList]);
+    for(let i = start; i < nums.length; i++){
+        tempList.push(nums[i]);                   // choose
+        helper(list, tempList, nums, i + 1);   // explore
+        tempList.pop();                           // unchoose
     }
 }
 
-
-var subsets = function(nums) {
-    let res= [];
-    if(nums == null || nums.length == 0) return res;
-    helper(res,[],nums, 0);
-    return res;
-};
-
-console.log(subsets([1,2,3]))
+console.log(subsetsI([1,2,3]))

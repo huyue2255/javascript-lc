@@ -125,7 +125,38 @@ var threeSum = function(nums) {
 };
 
 console.log(threeSum([-2,-1,-1,1,1,2,2])); // [ [ -2, 1, 1 ], [ -1, -1, 2 ] ]
+```
 
+## S.259. 3Sum Smaller
+```javascript
+/**
+ * 259. 3Sum Smaller
+ * nums = [-2, 0, 1, 3], and target = 2.
+ * time : O(n^2);
+ * space : O(1);
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var threeSumSmaller = function(nums, target) {
+    let res = 0;
+    nums.sort((a,b) => a-b);
+    for (let i = 0; i < nums.length - 2; i++) {
+        let left = i + 1;
+        let right = nums.length - 1;
+        while(left < right) {
+            if (nums[i] + nums[left] + nums[right] < target) {
+                res += right - left;
+                left++;
+            } else {
+                right--;
+            }
+        }
+    }
+    return res;
+};
+let nums = [3,1,0,-2];
+console.log(threeSumSmaller(nums, 4)); // 3
 ```
 
 ##S.18_4Sum
@@ -1202,8 +1233,178 @@ const singleNumber = (nums) => {
 };
 ```
 
+## S.219. Contains Duplicate II
+```javascript
+/**
+ * 219. Contains Duplicate II
+ * Given an integer array nums and an integer k,
+ * return true if there are two distinct indices i and j in the array such that nums[i] == nums[j] and abs(i - j) <= k.
+ * Example 1:    0, 1,2,3
+ Input: nums = [1,2,3,1], k = 3
+ Output: true
 
+ Example 2:     0,1,2,3
+ Input: nums = [1,0,1,1], k = 1
+ Output: true
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {boolean}
+ */
+var containsNearbyDuplicate = function(nums, k) {
+    let map = new Map();
+    for (let i = 0; i < nums.length; i++) {
+        if (map.has(nums[i])) {
+            if ( (i - map.get(nums[i])) <= k) {
+                return true;
+            }
+        }
+        map.set(nums[i], i);
+    }
+    return false;
+};
+```
 
+##S.215. Kth Largest Element in an Array
+```javascript
+/**
+ * /**
+ * 215. Kth Largest Element in an Array
+ * 最坏：O(n^2) 平均：O(nlogn)
+ * space : O(1)
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+var findKthLargest = function(nums, k) {
+    nums = nums.sort((a,b) => a-b);
+    return nums[nums.length - k];
+};
+
+console.log(findKthLargest([3,2,3,1,2,4,5,5,6], 3));
+```
+
+## S.221. Maximal Square
+```javascript
+/**
+ * 221. Maximal Square
+ * Given a 2D binary matrix filled with 0's and 1's, find the largest square containing only 1's and return its area.
+
+ For example, given the following matrix:
+
+ 1 0 1 0 0
+ 1 0 1 1 1
+ 1 1 1 1 1
+ 1 0 0 1 0
+ Return 4.
+
+ time : O(m * n)
+ space : O(m * n)
+ 思路：最大的二维矩阵
+ * @param {character[][]} matrix
+ * @return {number}
+ */
+var maximalSquare = function(matrix) {
+    if(!matrix.length) return 0;
+    const R_NUM = matrix.length, C_NUM = matrix[0].length;
+    // const dp = Array.from({length: R_NUM+1}, () => Array(C_NUM+1).fill(0));  // output: 4
+
+    const dp = [...Array(R_NUM+1)].map(x=>Array(C_NUM+1).fill(0))
+    // let dp = new Array(R_NUM+1).fill(new Array(C_NUM+1).fill(0)); // output: 9
+    let maxLen = 0;
+    for(let r = 1; r <= R_NUM; r++) {
+        for(let c = 1; c <= C_NUM; c++) {
+            if(matrix[r-1][c-1] == 1) {
+                dp[r][c] = Math.min(dp[r-1][c], dp[r][c-1], dp[r-1][c-1]) + 1;
+                maxLen = Math.max(maxLen, dp[r][c]);
+            }
+        }
+    }
+    return maxLen**2;
+};
+
+let matrix = [[1,1,1],[1,1,1],[1,0,1]];
+console.log(maximalSquare(matrix)); // 4
+```
+
+## S.252. Meeting Rooms
+```javascript
+/**
+ * 252. Meeting Rooms
+ * Given an array of meeting time intervals consisting of start and end times [[s1,e1],[s2,e2],...] (si < ei),
+ * determine if a person could attend all meetings.
+
+ For example,
+ Given [[0, 30],[5, 10],[15, 20]],
+ return false.
+
+ time : O(nlogn)
+ space : O(1)
+ 思路： 先排序，用start来排序。 然后只要找到前一个结束比后一个开始晚就行了。
+ * @param {number[][]} intervals
+ * @return {boolean}
+ */
+var canAttendMeetings = function(intervals) {
+
+    let arr = intervals.sort((a,b) => a[0] - b[0]);
+    for (let i = 1; i < intervals.length; i++) {
+        if (arr[i-1][1] > arr[i][0]) {
+            return false;
+        }
+    }
+    return true;
+};
+
+let arr = [[0, 30],[5, 10],[15, 20]];
+console.log(canAttendMeetings(arr)); // false
+```
+
+## S.253. Meeting Rooms II
+```javascript
+/**
+ * 253. Meeting Rooms II
+
+ |___| |____|
+ |_____| |___|
+
+ start:
+ | |   |   |
+ i
+ end :
+ |   |  |  |
+ end
+
+ time : O(nlogn) space : O(n)
+ 思路： 这道题目有一个值得注意的问题是，一个会议结束之后，可以安排另外一个会议。从而达到最小房间数。
+ 有两种方法，一种是扫描线算法，一种是PriorityQueue。
+
+ * @param {number[][]} intervals
+ * @return {number}
+ */
+// 方法一就是扫描线，两个数组存start and end. 然后不断比较， intervals[start] < intervals[end], room++ , else end++;
+// 你开始的时候，还没有结束
+var minMeetingRooms = function(intervals) {
+    let starts = new Array(intervals.length);
+    let ends = new Array(intervals.length);
+    let res = 0;
+    for ( let i = 0; i < intervals.length; i++) {
+        starts[i] = intervals[i][0];
+        ends[i] = intervals[i][1];
+    }
+    starts.sort((a, b) => a - b);
+    ends.sort((a, b) => a - b);
+    let end = 0
+    for (let i = 0; i < intervals.length; i++) {
+        if (starts[i] < ends[end]) {
+            res++;
+        } else {
+            end++;
+        }
+    }
+    return res;
+};
+let intervals = [[7,10],[2,4]];
+console.log(minMeetingRooms(intervals)); //1
+```
 
 
 

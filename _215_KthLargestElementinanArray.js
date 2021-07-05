@@ -12,8 +12,4 @@ var findKthLargest = function(nums, k) {
     return nums[nums.length - k];
 };
 
-
-
-
-
 console.log(findKthLargest([3,2,3,1,2,4,5,5,6], 3));

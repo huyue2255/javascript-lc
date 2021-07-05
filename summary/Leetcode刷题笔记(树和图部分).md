@@ -24,6 +24,7 @@ var printPreorderTraversal = function(root) {
     printPreorderTraversal(root.right);
 }
 ```
+![Screenshot](./images/dfs-0.png)
 
 ## S.145_Binary Tree Postorder Traversal
 ```javascript
@@ -667,4 +668,424 @@ var isBipartite = function (graph) {
     }
     return true;
 };
+```
+
+## S.207. Course Schedule
+```javascript
+/**
+ * 207. Course Schedule
+ * There are a total of n courses you have to take, labeled from 0 to n - 1.
+
+ Some courses may have prerequisites, for example to take course 0 you have to first take course 1,
+ which is expressed as a pair: [0,1]
+
+ Given the total number of courses and a list of prerequisite pairs, is it possible for you to finish all courses?
+
+ For example:
+
+ 2, [[1,0]]
+ There are a total of 2 courses to take. To take course 1 you should have finished course 0. So it is possible.
+
+ 2, [[1,0],[0,1]]
+ There are a total of 2 courses to take. To take course 1 you should have finished course 0,
+ and to take course 0 you should also have finished course 1. So it is impossible.
+
+ time : O(V + E)
+ space : O(n)
+ 思路： BFS
+ * @param {number} numCourses
+ * @param {number[][]} prerequisites
+ * @return {boolean}
+ */
+var canFinish = function(numCourses, prerequisites) {
+    // 当前这门课需要几个前置课，indegree[] => key: pair[0] 课程， value：几个前置课
+    let indegree = new Array(numCourses).fill(0);
+    let res = numCourses;
+    for (let pair of prerequisites) {
+        indegree[pair[0]]++;
+    }
+
+    // 找到进入的课程，就是不需要先修课程的课，放到queue里面去
+    let queue = [];
+    for (let i = 0; i < indegree.length; i++) {
+        if (indegree[i] == 0) {
+            queue.push(i);
+        }
+    }
+
+    // queue拿出来，计算个数。 res最后看是不是0，是的话就是可以了。
+    while (queue.length != 0) {
+        // pre => 表示可以修的课程
+        let pre = queue.shift();
+        res--;
+        for (let pair of prerequisites) {
+            // pair[1] => 表示需要先修的课程，如果已经有了，就把 indegree[pair[0]]--； 最后在判断是不是0，是的话就放到queue里面去。
+            if (pair[1] == pre) {
+                indegree[pair[0]]--;
+                if (indegree[pair[0]] == 0) {
+                    queue.push(pair[0]);
+                }
+            }
+        }
+    }
+    return res == 0;
+};
+```
+
+## S.210. Course Schedule II
+```javascript
+/**
+ * 210. Course Schedule II
+ * There are a total of n courses you have to take, labeled from 0 to n - 1.
+
+ Some courses may have prerequisites, for example to take course 0 you have to first take course 1,
+ which is expressed as a pair: [0,1]
+
+ Given the total number of courses and a list of prerequisite pairs, return the resing of courses you should
+ take to finish all courses.
+
+ There may be multiple correct ress, you just need to return one of them. If it is impossible to finish all courses,
+ return an empty array.
+
+ For example:
+
+ 2, [[1,0]]
+ There are a total of 2 courses to take. To take course 1 you should have finished course 0. So the correct course res
+ is [0,1]
+
+ 4, [[1,0],[2,0],[3,1],[3,2]]
+ There are a total of 4 courses to take. To take course 3 you should have finished both courses 1 and 2.
+ Both courses 1 and 2 should be taken after you finished course 0. So one correct course res is [0,1,2,3].
+ Another correct resing is[0,2,1,3].
+
+
+   -> 1 ->
+ 0         3
+   -> 2 ->
+
+
+ 入度 = 0 => BFS
+
+ 0 : 0
+ 1 : 0
+ 2 : 0
+ 3 : 2
+
+ queue : 3
+ res : 0,1,2,3
+
+ time : O(V + E)
+ space : O(n)
+ 思路：BFS
+ * @param {number} numCourses
+ * @param {number[][]} prerequisites
+ * @return {number[]}
+ */
+var findOrder = function(numCourses, prerequisites) {
+    let indegree = new Array(numCourses).fill(0);
+    let res = new Array(numCourses);
+    let k = 0;
+    for (let pair of prerequisites) {
+        indegree[pair[0]]++;
+    }
+    let queue = [];
+    for (let i = 0; i < indegree.length; i++) {
+        if (indegree[i] == 0) {
+            queue.push(i);
+            res[k++] = i;
+        }
+    }
+
+    while (queue.length != 0) {
+        let pre = queue.pop();
+        for (let pair of prerequisites) {
+            if (pair[1] == pre) {
+                indegree[pair[0]]--;
+                if (indegree[pair[0]] == 0) {
+                    queue.push(pair[0]);
+                    res[k++] = pair[0];
+                }
+            }
+        }
+    }
+    return (k == numCourses) ? res : [];
+};
+
+let course = [[1,0],[2,0],[3,1],[3,2]];
+
+console.log(findOrder(4,course));
+```
+
+## S.222. Count Complete Tree Nodes
+```javascript
+/**
+ * 222. Count Complete Tree Nodes
+ * Given a complete binary tree, count the number of nodes.
+
+ Definition of a complete binary tree from Wikipedia:
+ In a complete binary tree every level, except possibly the last, is completely filled, and all nodes
+ in the last level are as far left as possible. It can have between 1 and 2h nodes inclusive at the last level h.
+
+       3
+     /   \
+    9     20
+  /  \   /  \
+ 15   7 1
+
+ 2^h - 1
+
+ * @param {TreeNode} root
+ * @return {number}
+ */
+// Method 1: time: O(n), space: O(1)
+var countNodes = function(root) {
+    if (root == null) return 0;
+    let count = 0;
+    let queue = [root];
+    while (queue.length != 0) {
+        let size = queue.length;
+        for (let i = 0; i < size; i++) {
+            let cur = queue.shift();
+            count++;
+            if (cur.left != null) queue.push(cur.left);
+            if (cur.right != null) queue.push(cur.right);
+        }
+    }
+    return count;
+};
+
+// Method 2
+// time : O(logn * logn)
+// space : O(n) / O(logn) 不确定
+function leftDepth(root) {
+    let height = 0;
+    while (root != null) {
+        root = root.left;
+        height++;
+    }
+    return height;
+}
+
+function rightDepth(root) {
+    let height = 0;
+    while (root != null) {
+        root = root.right;
+        height++;
+    }
+    return height;
+}
+
+var countNodes = function(root) {
+    let left = leftDepth(root);
+    let right = rightDepth(root);
+
+    if (left == right) {
+        return (1 << left) - 1
+    } else {
+        return 1 + countNodes(root.left) + countNodes(root.right);
+    }
+};
+```
+
+## S.230. Kth Smallest Element in a BST
+```javascript
+/**
+ * 230. Kth Smallest Element in a BST
+ * Given a binary search tree, write a function kthSmallest to find the kth smallest element in it.
+ *
+ *
+ * time : O(n)
+ * space : O(n);
+ * @param {TreeNode} root
+ * @param {number} k
+ * @return {number}
+ */
+function TreeNode(val, left, right) {
+    this.val = (val === undefined ? 0 : val)
+    this.left = (left === undefined ? null : left)
+    this.right = (right === undefined ? null : right)
+}
+
+function helper(root, inorder) {
+    if (root == null) return;
+    helper(root.left, inorder);
+    inorder.push(root.val);
+    helper(root.right, inorder);
+}
+
+var kthSmallest = function(root, k) {
+    let inorder = []
+    helper(root, inorder);
+    return inorder[k-1];
+};
+
+let root = new TreeNode(3);
+let node1 = new TreeNode(1);
+let node2 = new TreeNode(4);
+let node3 = new TreeNode(2);
+
+root.left = node1;
+root.right = node2;
+node1.left = null;
+node1.right = node3;
+node2.left = null;
+node2.right = null
+console.log(kthSmallest(root, 1)); // 1
+```
+
+## S.378. Kth Smallest Element in a Sorted Matrix
+```javascript
+/**
+ * 378. Kth Smallest Element in a Sorted Matrix
+ * Given an n x n matrix where each of the rows and columns are sorted in ascending order, return the kth smallest element in the matrix.
+ * Note that it is the kth smallest element in the sorted order, not the kth distinct element.
+ * Input: matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8
+ * Output: 13
+ * Explanation: The elements in the matrix are [1,5,9,10,11,12,13,13,15], and the 8th smallest number is 13
+ * @param {number[][]} matrix
+ * @param {number} k
+ * @return {number}
+ */
+// Method 1:
+var kthSmallest = function (matrix, k) {
+    return matrix.flatMap(x => x).sort((a, b) => a - b)[k - 1]
+};
+let matrix = [[1,5,9],[10,11,13],[12,13,15]]
+console.log(kthSmallest(matrix, 8))
+
+
+// Method 2:
+var singleArray = function(arr) {
+    let size = arr.length;
+    let oneDarray = [];
+    for(let i = 0; i< size; i++) {
+        oneDarray.push(...arr[i]);
+    }
+    return oneDarray;
+}
+```
+
+## S.250. Count Univalue Subtrees
+```javascript
+/**
+ * 250. Count Univalue Subtrees
+ * Given a binary tree, count the number of uni-value subtrees.
+
+ A Uni-value subtree means all nodes of the subtree have the same value.
+
+ For example:
+ Given binary tree,
+      5
+     / \
+    1   5
+   / \   \
+  5   5   5
+ return 4.
+
+ root = 5 res = 2
+ root = 1
+ root = 5 res = 3
+ root = 5 res = 4
+
+ time : O(n)
+ space : O(n)
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var countUnivalSubtrees = function(root) {
+    let res = 0;
+    helper(root);
+    return res;
+    function helper(root) {
+        if (root == null) return true;
+        let left = helper(root.left);
+        let right = helper(root.right);
+        if (left && right) {
+            if (root.left != null && root.left.val != root.val) {
+                return false;
+            }
+
+            if (root.right != null && root.right.val != root.val) {
+                return false;
+            }
+
+            res++;
+            return true;
+        }
+    }
+};
+```
+##S.257. Binary Tree Paths
+```javascript
+/**
+ * 257. Binary Tree Paths
+ * Given a binary tree, return all root-to-leaf paths.
+
+ For example, given the following binary tree:
+ 3
+ / \
+ 9  20
+ /  \
+ 15   7
+ ["3->9->15", "3->9->7", "3->20]
+
+ case :
+ 3
+ / \
+ 9  20
+ /  \
+ 15   7
+ 3->9->15
+ 3->9->7
+ 3->20
+ ["3->9->15", "3->9->7", "3->20]
+
+ time : O(n);
+ space : O(n);
+ * @param {TreeNode} root
+ * @return {string[]}
+ */
+
+function helper(res,root, path) {
+    if (root.left == null && root.right == null) {
+        res.push(path + root.val);
+    }
+    if (root.left != null) {
+        helper(res, root.left, path + root.val + "->");
+    }
+    if (root.right != null) {
+        helper(res, root.right, path + root.val + "->");
+    }
+}
+
+var binaryTreePaths = function(root) {
+    let res = [];
+    if (root == null) return res;
+    helper(res,root, "");
+    return res;
+};
+
+function TreeNode(val, left, right) {
+    this.val = (val === undefined ? 0 : val)
+    this.left = (left === undefined ? null : left)
+    this.right = (right === undefined ? null : right)
+}
+
+let n1 =  new TreeNode(1);
+let n2 =  new TreeNode(2);
+let n3 =  new TreeNode(3);
+let n4 =  new TreeNode(5);
+n1.left = n2;
+n1.right = n3;
+n2.right = n4;
+
+console.log(binaryTreePaths(n1)); // [ '1->2->5', '1->3' ]
 ```

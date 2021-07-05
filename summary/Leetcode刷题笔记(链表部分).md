@@ -324,6 +324,34 @@ var isPalindrome = function(head) {
     return true;
 };
 ```
+## S.203_Remove LinkedList element
+
+```javascript
+function ListNode(val, next) {
+    this.val = (val === undefined ? 0 : val)
+    this.next = (next === undefined ? null : next)
+}
+
+var removeElements = function(head, val) {
+    if (head == null) return head;
+    let dummy = new ListNode(0);
+    dummy.next = head;
+    let prev = dummy;
+    while (prev != null && prev.next != null) {
+        if (prev.next.val != val) {
+            prev = prev.next;
+        } else {
+            prev.next = prev.next.next;
+        }
+    }
+
+    return dummy.next;
+};
+```
+
+
+
+
 ## S.83_Remove Duplicates from Sorted List
 
 原题地址：https://leetcode.com/problems/remove-duplicates-from-sorted-list/
@@ -669,6 +697,7 @@ var hasCycle = function(head) {
 
 在z处相遇。 a = c;
 
+![Screenshot](./images/linkedlist-10.png)
 
 
 代码：

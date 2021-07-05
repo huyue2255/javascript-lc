@@ -128,7 +128,60 @@ function helper(res, list, candidates, target, start) {
 nums = [2,3,6,7];
 console.log(combinationSum(nums, 7));
 ```
+## S.216. Combination Sum III
+```javascript
+/**
+ * 216. Combination Sum III
+ * Find all possible combinations of k numbers that add up to a number n,
+ * given that only numbers from 1 to 9 can be used and each combination should be a unique set of numbers.
 
+
+ Example 1:
+
+ Input: k = 3, n = 7
+
+ Output:
+
+ [[1,2,4]]
+
+ Example 2:
+
+ Input: k = 3, n = 9
+
+ Output:
+
+ [[1,2,6], [1,3,5], [2,3,4]]
+
+ time : O(2^n)
+ space : O(n);
+ * @param {number} k
+ * @param {number} n
+ * @return {number[][]}
+ */
+function helper(res, list, k, n, start) {
+
+    if (k == 0 && n == 0) {
+        res.push(list.slice());
+        return;
+    }
+    // 这里是值得注意的是所有数字小于9
+    // for (let i = start; i <= n; i++) { 否则的话就是这行代码
+    for (let i = start; i <= 9; i++) {
+        list.push(i);
+        helper(res, list,k-1,n-i,i+1);
+        list.pop();
+    }
+}
+
+var combinationSum3 = function(k, n) {
+    let res = [];
+    helper(res, [], k, n, 1);
+    return res;
+};
+
+console.log(combinationSum3(3,7)); // [ [ 1, 2, 4 ] ]
+
+```
 
 ## S.77_Combinations
 
@@ -370,4 +423,70 @@ var upsideDownBinaryTree = function(root) {
     // 很有意思把最左边的孩子一路传上来！！
     return newRoot;
 };
+```
+
+## S.254. Factor _77_Combinations
+```javascript
+/**
+ * 254. Factor _77_Combinations
+ * Numbers can be regarded as product of its factors. For example,
+
+ 8 = 2 x 2 x 2;
+ = 2 x 4.
+ Write a function that takes an integer n and return all possible combinations of its factors.
+
+ Note:
+ You may assume that n is always positive.
+ Factors should be greater than 1 and less than n.
+ Examples:
+ input: 1
+ output:
+ []
+ input: 37
+ output:
+ []
+ input: 12
+ output:
+ [
+ [2, 6],
+ [2, 2, 3],
+ [3, 4]
+ ]
+ input: 32
+ output:
+ [
+ [2, 16],
+ [2, 2, 8],
+ [2, 2, 2, 4],
+ [2, 2, 2, 2, 2],
+ [2, 4, 4],
+ [4, 8]
+ ]
+ * @param {number} n
+ * @return {number[][]}
+ */
+function helper(res, list, n, start) {
+    if (n == 1) {
+        if (list.length > 1) {
+            res.push(list.slice());
+            return;
+        }
+    }
+
+    for (let i = start; i <= n; i++) {
+        if (n % i == 0) {
+            list.push(i);
+            helper(res, list, n / i, i);
+            list.pop();
+        }
+    }
+}
+
+var getFactors = function(n) {
+    let res = [];
+    helper(res, [], n, 2);
+    return res;
+};
+
+console.log(getFactors(4))
 ```

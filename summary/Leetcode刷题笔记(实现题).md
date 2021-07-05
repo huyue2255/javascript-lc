@@ -366,3 +366,186 @@ var findRepeatedDnaSequences = function(s) {
 let str = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT";
 console
 ```
+
+## S.224. Basic Calculator
+```javascript
+/**
+ * 224. Basic Calculator
+
+ "1 + 1" = 2
+ " 2-1 + 2 " = 3
+ "(1+(4+5+2)-3)+(6+8)" = 23
+
+ time : O(n)
+ space : O(n)
+ * @param {string} s
+ * @return {number}
+ */
+
+function isNumber(character) {
+    if (character >= 0 && character <= 9) {
+        return true;
+    }
+    return false;
+}
+
+var calculate = function (s) {
+    let stack = [];
+    let sign = 1;
+    let res = 0;
+
+    for (let i = 0; i < s.length; i++) {
+        if (isNumber(s[i])) {
+            let num = "";
+            num += s[i];
+            while (i + 1 < s.length && isNumber(s[i + 1])) {
+                num += s[i + 1];
+                i++;
+            }
+            res += num * sign;
+        } else if (s[i] == '+') {
+            sign = 1;
+        } else if (s[i] == '-') {
+            sign = -1;
+        } else if (s[i] == '(') {
+            stack.push(res);
+            stack.push(sign);
+            res = 0;
+            sign = 1;
+        } else if (s[i] == ')') {
+            res = res * stack.pop() + stack.pop();
+        }
+    }
+    return res;
+};
+
+console.log(calculate('(1+1) *2'));
+```
+
+## S.227. Basic CalculatorII
+```javascript
+var calculate = function(s) {
+    let temp = "";
+    let stack = [];
+
+    //key is to check what the PREVIOUS sign is, not current
+    let prevSign = "+"
+    for(let i = 0; i < s.length; i++){
+        if(isNumber(s[i])){
+            temp += s[i];
+        }
+
+        //last element will always end in number for a valid expression
+        // " 3+5 / 2 "; => i === s.length-1)
+        if(isOperator(s[i]) || i === s.length-1){
+            if(prevSign === "+"){
+                stack.push(temp);
+            } else if(prevSign === "-"){
+                temp = temp * -1;
+                stack.push(temp);
+            } else if(prevSign === "*"){
+                let prevVal = stack.pop();
+                temp *= prevVal;
+                stack.push(temp);
+            } else if(prevSign === "/"){
+                let prevVal = stack.pop();
+                prevVal /= temp;
+                //removes fraction rather than floor() which rounds down and works wrong for - nums
+                prevVal = Math.trunc(prevVal);
+                stack.push(prevVal);
+            }
+
+            temp = "";
+            prevSign = s[i];
+        }
+    }
+
+    let res = 0;
+    while(stack.length > 0){
+        res += Number(stack.pop());
+    }
+    return res;
+};
+
+function isOperator(character){
+    if(character === "+" || character === "-" ||
+        character === "/" || character === "*"){
+        return true;
+    }
+    return false;
+}
+
+function isNumber(character){
+    if(character >= 0 && character <= 9){
+        return true;
+    }
+    return false;
+}
+
+let r = " 3+5 / 2 ";
+console.log(calculate(r))
+```
+
+## S.228. Summary Ranges
+```javascript
+/**
+ * 228. Summary Ranges
+ * Given a sorted integer array without duplicates, return the summary of its ranges.
+
+ Example 1:
+ Input: [0,1,2,4,5,7]
+ Output: ["0->2","4->5","7"]
+ Example 2:
+ Input: [0,2,3,4,6,8,9]
+ Output: ["0","2->4","6","8->9"]
+
+ time : O(n)
+ space : O(n)
+ * @param {number[]} nums
+ * @return {string[]}
+ */
+var summaryRanges = function(nums) {
+    let res = [];
+    for (let i = 0; i < nums.length; i++) {
+        let num = nums[i];
+        while (i < nums.length && nums[i] + 1 == nums[i+1]) {
+            i++;
+        }
+        if (num != nums[i]) {
+            res.push(`${num}->${nums[i]}`);
+        } else {
+            res.push(`${num}`);
+        }
+    }
+    return res;
+};
+
+console.log(summaryRanges([0,2,3,4,6,8,9]))
+
+```
+## S.229. Majority Element II
+```javascript
+/**
+ * 229. Majority Element II
+ * Given an integer array of size n, find all elements that appear more than ⌊ n/3 ⌋ times.
+ * The algorithm should run in linear time and in O(1) space.
+ *
+ * time : O(n)
+ * space : O(1)
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var majorityElement = function(nums) {
+    const memo = new Map()
+    for (let i = 0; i < nums.length; i++) {
+        // count the no. of occurances
+        memo.set(nums[i],memo.get(nums[i])+1 || 1)
+    }
+    const result = []
+    for (let [key,value] of memo) {
+        // if greater than 1/3rd of total items then push it in result array
+        if (value > nums.length / 3) result.push(key)
+    }
+    return result ;
+};
+```

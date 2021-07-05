@@ -236,5 +236,203 @@ BSTIterator.prototype.hasNext = function() {
  * var param_2 = obj.hasNext()
  */
 
+```
+## S.208.Implement Tire
+```javascript
+/**
+ * Initialize your data structure here.
+ * time : O(n)  n: word.length();
+ * space: O(num of Words * word.length();
+ */
+var Trie = function() {
+    this.isWord = false;
+    this.root = new Map();
+};
 
+/**
+ * Inserts a word into the trie.
+ * @param {string} word
+ * @return {void}
+ */
+Trie.prototype.insert = function(word) {
+    let cur = this;
+    for (let c of word) {
+        if (!cur.root.has(c)) {
+            cur.root.set(c, new Trie());
+        }
+        cur = cur.root.get(c);
+    }
+    cur.isWord = true;
+};
+
+/**
+ * Returns if the word is in the trie.
+ * @param {string} word
+ * @return {boolean}
+ */
+Trie.prototype.search = function(word) {
+    let cur = this;
+    for (let c of word) {
+        if (!cur.root.has(c)) {
+            return false;
+        }
+        cur = cur.root.get(c);
+    }
+    return cur.isWord;
+};
+
+/**
+ * Returns if there is any word in the trie that starts with the given prefix.
+ * @param {string} prefix
+ * @return {boolean}
+ */
+Trie.prototype.startsWith = function(prefix) {
+    let cur = this;
+    for (let c of prefix) {
+        if (!cur.root.has(c)) return false;
+        cur = cur.root.get(c);
+    }
+    return true;
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * var obj = new Trie()
+ * obj.insert(word)
+ * var param_2 = obj.search(word)
+ * var param_3 = obj.startsWith(prefix)
+ */
+```
+
+## S.211. Add and Search Word - Data structure design
+```javascript
+/**
+ *
+ * 211. Add and Search Word - Data structure design
+ * Design a data structure that supports the following two operations:
+
+ void addWord(word)
+ bool search(word)
+ search(word) can search a literal word or a regular expression string containing only letters a-z or .. A . means it can represent any one letter.
+
+ For example:
+
+ addWord("bad")
+ addWord("dad")
+ addWord("mad")
+ search("pad") -> false
+ search("bad") -> true
+ search(".ad") -> true
+ search("b..") -> true
+ * Initialize your data structure here.
+ */
+var WordDictionary = function() {
+    this.map = new Map();
+};
+
+/**
+ * @param {string} word
+ * @return {void}
+ */
+WordDictionary.prototype.addWord = function(word) {
+    let size = word.length;
+    if(this.map.get(size))  {
+        this.map.get(size).push(word);
+    } else {
+        this.map.set(size, [word]);
+    }
+};
+
+/**
+ * @param {string} word
+ * @return {boolean}
+ */
+WordDictionary.prototype.search = function(word) {
+    if(!this.map.get(word.length)) return false;
+    let temp = [...this.map.get(word.length)];
+    console.log('temp',temp)
+    for(let i = 0; i < word.length; i++) {
+        if (word[i] === ".") continue;
+        for (let j = 0; j < temp.length; j++) {
+            if (word[i] !== temp[j][i]) {
+                // 删除从j开始的一个元素，其他元素会向前移动，所以　j--, 从而让之后的j++会指向下一个元素。
+                // 最后判断数组里面还有没有元素。
+                temp.splice(j, 1);
+                j--;
+            }
+        }
+    }
+    return temp.length != 0 ? true : false;
+};
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * var obj = new WordDictionary()
+ * obj.addWord(word)
+ * var param_2 = obj.search(word)
+ */
+
+var obj = new WordDictionary()
+obj.addWord('oord');
+obj.addWord('kord');
+var param_2 = obj.search('word');
+console.log(param_2);
+```
+
+## S.251. Flatten 2D Vector
+```javascript
+/**
+ * 251. Flatten 2D Vector
+ * Given 2d vector =
+
+ [
+ [1,2],
+ [3],
+ [4,5,6]
+ ]
+ By calling next repeatedly until hasNext returns false,
+ the order of elements returned by next should be: [1,2,3,4,5,6].
+
+ time : O(n)
+ space : O(1)
+ * @param {number[][]} vec
+ */
+var Vector2D = function(vec) {
+    // 两种方法flattern 2d matrix array
+    // this.arr = vec.flat(2); // method 1
+    // method 2
+    this.arr = [];
+    const helper = (val) => {
+        if (!Array.isArray(val)) {
+            this.arr.push(val)
+        }
+
+        for (let i = 0; i < val.length; i++) {
+            helper(val[i])
+        }
+        return
+    }
+    helper(vec);
+};
+
+/**
+ * @return {number}
+ */
+Vector2D.prototype.next = function() {
+    return this.arr.shift();
+};
+
+/**
+ * @return {boolean}
+ */
+Vector2D.prototype.hasNext = function() {
+    return this.arr.length > 0;
+};
+
+/**
+ * Your Vector2D object will be instantiated and called as such:
+ * var obj = new Vector2D(vec)
+ * var param_1 = obj.next()
+ * var param_2 = obj.hasNext()
+ */
 ```
