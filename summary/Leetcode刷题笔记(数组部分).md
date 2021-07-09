@@ -742,7 +742,7 @@ var jump = function(nums) {
 console.log(removeDuplicates([2,3,1,1,4]));
 ```
 
-##S.118_Pascal's Triangle
+## S.118_Pascal's Triangle
 ```javascript
 /**
  * 118. Pascal's Triangle
@@ -781,7 +781,7 @@ var generate = function(numRows) {
 };
 ```
 
-##S.119_Pascal's Triangle II
+## S.119_Pascal's Triangle II
 ```javascript
 /**
  * 119. Pascal's Triangle II
@@ -816,7 +816,7 @@ var getRow = function(rowIndex) {
 };
 ```
 
-##S.120_Triangle
+## S.120_Triangle
 ```javascript
 /**
  * 120. Triangle

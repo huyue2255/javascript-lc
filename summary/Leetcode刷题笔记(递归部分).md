@@ -18,67 +18,7 @@ var fib = function(n) {
 };
 ```
 
-## S.70_Climbing Stairs
 
-原题地址：https://leetcode.com/problems/climbing-stairs/
-
-思路：
-
-查资料，说这是一道典型的动态规划的题目。主要思想就是找出递推式，然后利用子问题的解来求最后的最优解。
-
-一共有n层，要想爬到第n层，有两种方法。第一种，从第n-1层爬1步上来；第二种，从第n-2层爬2步上来。所以，假如从0层到n-1层有dp[n-1]种方法，从0层到n-2层有dp[n-2]中方法，那么到第n层的方法数，就是dp[n-1]+dp[n-2]种方法。因为从他们都可以到达第n层。
-
-综上，推出的递推式是：dp[n] = dp[n-1] + dp[n-2]。如果梯子有1层或者2层，dp[1] = 1, dp[2] = 2，如果梯子有0层，自然dp[0] = 0 。
-
-代码：
-
-```javascript
-/**
- * * 70. Climbing Stairs
- * You are climbing a stair case. It takes n steps to reach to the top.
-
- Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
-
- Note: Given n will be a positive integer.
-
- fibonacci: 1 1 2 3
- Example 1:
-
- Input: 2
- Output:  2
- Explanation:  There are two ways to climb to the top.
-
- 1. 1 step + 1 step
- 2. 2 steps
-
- time : O(n)
- space : O(n)/O(1)
-
- time: O(2^n) 递归
- * @param {number} n
- * @return {number}
- */
-var climbStairs = function(n) {
-    if (n <= 2) {
-        return n;
-    }else {
-        return climbStairs(n-1) + climbStairs(n-2);
-    }
-};
-
-
-var climbStairs = function(n) {
-    if (n == 1) return 1;
-    if (n == 2) return 2;
-    let cur = 2;
-    let prev = 1;
-    for(let i = 3; i <= n; i++) {
-        cur = cur + prev;
-        prev = cur - prev;
-    }
-    return cur;
-}
-```
 
 ## S.39_Combination Sum
 
