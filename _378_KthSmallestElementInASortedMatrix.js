@@ -11,7 +11,8 @@
  */
 // Method 1:
 var kthSmallest = function (matrix, k) {
-    return matrix.flatMap(x => x).sort((a, b) => a - b)[k - 1]
+    return matrix.flatMap(x => x).sort((a, b) => a - b)[k - 1];
+    // return matrix.flat().sort((a, b) => a - b)[k - 1]
 };
 let matrix = [[1,5,9],[10,11,13],[12,13,15]]
 console.log(kthSmallest(matrix, 8))

@@ -159,7 +159,7 @@ let nums = [3,1,0,-2];
 console.log(threeSumSmaller(nums, 4)); // 3
 ```
 
-##S.18_4Sum
+## S.18_4Sum
 
 原题地址：
 
