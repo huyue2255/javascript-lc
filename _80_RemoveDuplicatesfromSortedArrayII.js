@@ -16,6 +16,9 @@
 
  time: O(n);
  space: O(1);
+ two pointer:
+ count: build array pointer
+ i: go through the original array pointer
  * @param {number[]} nums
  * @return {number}
  */
@@ -24,7 +27,8 @@ var removeDuplicates = function(nums) {
     let count = 2;
     for (let i = 2; i < nums.length; i++) {
         if (nums[i] != nums[count-2]) {
-            nums[count++] = nums[i];
+            nums[count] = nums[i];
+            count++;
         }
     }
     return count;

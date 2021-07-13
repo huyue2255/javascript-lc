@@ -3,15 +3,15 @@ var solution = function(isBadVersion) {
         let start = 1;
         let end = n;
 
-        while(start <= end) {
+        while(start + 1 < end) {
             const mid = start + Math.floor((end - start) / 2);
-
             if (isBadVersion(mid)) {
-                end = mid - 1;
+                end = mid;
             } else {
-                start = mid + 1;
+                start = mid;
             }
         }
-        return start;
+        if (isBadVersion(start)) return start;
+        return end;
     };
 };
